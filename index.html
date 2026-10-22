@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 ITF 優惠券派發小幫手</title>
+
+  <style>
+    :root {
+      --ink: #092a43;
+      --blue: #0870c9;
+      --teal: #159fa2;
+      --line: #c9dce1;
+      --paper: #f3f8f9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "PingFang TC",
+        "Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(circle at 90% 5%, #d4f1ef, transparent 28rem),
+        var(--paper);
+    }
+
+    main {
+      width: min(860px, calc(100% - 28px));
+      margin: auto;
+      padding: 30px 0 60px;
+    }
+
+    header {
+      margin-bottom: 20px;
+    }
+
+    header p {
+      margin: 0 0 7px;
+      color: #607783;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .1em;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(28px, 6vw, 40px);
+    }
+
+    .card {
+      padding: 32px;
+      border: 1px solid #dbe7ea;
+      border-radius: 26px;
+      background: white;
+      box-shadow: 0 18px 48px #123b5518;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 8px;
+      background: var(--teal);
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    h2 {
+      margin: 12px 0 6px;
+      font-size: 26px;
+    }
+
+    .intro {
+      margin: 0 0 28px;
+      color: #607783;
+      line-height: 1.7;
+    }
+
+    .step {
+      margin: 25px 0 10px;
+      color: #526c78;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .step strong {
+      margin-right: 6px;
+      color: var(--teal);
+    }
+
+    .partners {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .partner {
+      position: relative;
+      min-height: 72px;
+      border: 2px solid #dbe4e7;
+      border-radius: 15px;
+      background: white;
+      color: var(--ink);
+      font-size: 19px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .partner.selected {
+      border-color: var(--blue);
+      background: #f1f8ff;
+      box-shadow: 0 0 0 3px #0870c912;
+    }
+
+    .partner.selected::after {
+      content: "✓";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      transform: translateY(-50%);
+    }
+
+    #phone {
+      width: 100%;
+      padding: 16px 17px;
+      border: 2px solid var(--line);
+      border-radius: 15px;
+      background: #fbfdfe;
+      color: var(--ink);
+      font-size: 20px;
+      outline: none;
+    }
+
+    #phone:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px #0870c915;
+    }
+
+    .error {
+      display: none;
+      margin: 7px 2px;
+      color: #ad3b35;
+      font-size: 13px;
+    }
+
+    .preview {
+      display: grid;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 15px;
+      background: #f2f4f5;
+      color: #71828a;
+    }
+
+    .preview.ready {
+      background: #eaf7f6;
+      color: var(--ink);
+    }
+
+    .preview span {
+      color: #607783;
+      font-size: 13px;
+    }
+
+    #command {
+      font-size: 21px;
+      letter-spacing: .04em;
+      overflow-wrap: anywhere;
+    }
+
+    #company {
+      color: #087477;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 9px;
+      margin-top: 15px;
+    }
+
+    .buttons button {
+      min-height: 50px;
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .buttons button:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    #copy {
+      background: var(--blue);
+      color: white;
+    }
+
+    #line {
+      background: var(--teal);
+      color: white;
+    }
+
+    #reset {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+    }
+
+    #message {
+      display: none;
+      margin: 15px 0 0;
+      padding: 13px 15px;
+      border-radius: 12px;
+      background: #fff3d7;
+      color: #734b00;
+      line-height: 1.6;
+    }
+
+    .instructions {
+      margin-top: 16px;
+      padding: 24px 28px;
+      border: 1px solid #dbe7ea;
+      border-radius: 20px;
+      background: white;
+    }
+
+    .instructions h3 {
+      margin: 0 0 10px;
+    }
+
+    .instructions ol {
+      margin: 0;
+      padding-left: 22px;
+      color: #536c78;
+      line-height: 1.9;
+    }
+
+    .privacy {
+      margin: 15px 0 0;
+      padding-top: 15px;
+      border-top: 1px solid var(--line);
+      color: #607783;
+      font-size: 13px;
+    }
+
+    @media (max-width: 650px) {
+      main {
+        width: calc(100% - 20px);
+        padding-top: 18px;
+      }
+
+      .card {
+        padding: 23px 18px;
+      }
+
+      .partner {
+        min-height: 65px;
+        font-size: 17px;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <p>2026 ITF・工作人員操作頁</p>
+      <h1>友好單位優惠券派發</h1>
+    </header>
+
+    <section class="card">
+      <span class="badge">優惠券小幫手</span>
+      <h2>自動產生正確派券指令</h2>
+
+      <p class="intro">
+        選擇友好單位並輸入捷運會員手機號碼，
+        系統就會自動產生完整派券指令。
+      </p>
+
+      <p class="step">
+        <strong>步驟 1</strong>選擇派券單位
+      </p>
+
+      <div class="partners">
+        <button class="partner" data-name="近鐵" data-code="a">
+          近鐵
+        </button>
+
+        <button class="partner" data-name="京成" data-code="b">
+          京成
+        </button>
+
+        <button class="partner" data-name="京急" data-code="c">
+          京急
+        </button>
+
+        <button class="partner" data-name="JR 東日本" data-code="d">
+          JR 東日本
+        </button>
+      </div>
+
+      <p class="step">
+        <strong>步驟 2</strong>輸入捷運會員手機號碼
+      </p>
+
+      <input
+        id="phone"
+        type="tel"
+        inputmode="numeric"
+        maxlength="12"
+        placeholder="09xxxxxxxx"
+      >
+
+      <p id="error" class="error">
+        請輸入09開頭的10位數手機號碼。
+      </p>
+
+      <div id="preview" class="preview">
+        <span>自動產生派券指令</span>
+        <strong id="command">請先選擇單位並輸入手機號碼</strong>
+        <small id="company"></small>
+      </div>
+
+      <div class="buttons">
+        <button id="copy" disabled>複製派券指令</button>
+        <button id="line" disabled>複製並開啟 LINE</button>
+        <button id="reset">清除重來</button>
+      </div>
+
+      <p id="message"></p>
+    </section>
+
+    <section class="instructions">
+      <h3>工作人員操作方式</h3>
+
+      <ol>
+        <li>點選旅客要領取的友好單位優惠券。</li>
+        <li>輸入旅客的捷運會員手機號碼。</li>
+        <li>複製派券指令。</li>
+        <li>到LINE群組「優惠券小幫手」貼上並送出。</li>
+      </ol>
+
+      <p class="privacy">
+        本頁只在目前裝置上產生指令，不會儲存或傳送手機號碼。
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const partners = document.querySelectorAll(".partner");
+    const phoneInput = document.querySelector("#phone");
+    const preview = document.querySelector("#preview");
+    const commandText = document.querySelector("#command");
+    const companyText = document.querySelector("#company");
+    const errorText = document.querySelector("#error");
+    const copyButton = document.querySelector("#copy");
+    const lineButton = document.querySelector("#line");
+    const resetButton = document.querySelector("#reset");
+    const message = document.querySelector("#message");
+
+    let selectedName = "";
+    let selectedCode = "";
+    let command = "";
+
+    partners.forEach((button) => {
+      button.addEventListener("click", () => {
+        partners.forEach((item) =>
+          item.classList.remove("selected")
+        );
+
+        button.classList.add("selected");
+        selectedName = button.dataset.name;
+        selectedCode = button.dataset.code;
+        updateCommand();
+      });
+    });
+
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = phoneInput.value.replace(/[^\d\s-]/g, "");
+      updateCommand();
+    });
+
+    function updateCommand() {
+      const phone = phoneInput.value.replace(/\D/g, "").slice(0, 10);
+      const validPhone = /^09\d{8}$/.test(phone);
+
+      errorText.style.display =
+        phone.length > 0 && !validPhone ? "block" : "none";
+
+      if (selectedCode && validPhone) {
+        command = `${phone}_${selectedCode}`;
+        commandText.textContent = command;
+        companyText.textContent = `${selectedName}優惠券`;
+        preview.classList.add("ready");
+        copyButton.disabled = false;
+        lineButton.disabled = false;
+      } else {
+        command = "";
+        commandText.textContent =
+          "請先選擇單位並輸入手機號碼";
+        companyText.textContent = selectedName
+          ? `${selectedName}優惠券`
+          : "";
+        preview.classList.remove("ready");
+        copyButton.disabled = true;
+        lineButton.disabled = true;
+      }
+
+      message.style.display = "none";
+    }
+
+    async function copyCommand() {
+      if (!command) return;
+
+      try {
+        await navigator.clipboard.writeText(command);
+      } catch {
+        const textArea = document.createElement("textarea");
+        textArea.value = command;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        textArea.remove();
+      }
+
+      copyButton.textContent = "✓ 已複製指令";
+      message.textContent =
+        `已複製 ${command}，請貼到LINE群組「優惠券小幫手」。`;
+      message.style.display = "block";
+    }
+
+    copyButton.addEventListener("click", copyCommand);
+
+    lineButton.addEventListener("click", async () => {
+      await copyCommand();
+      window.location.href = "https://line.me/R/";
+    });
+
+    resetButton.addEventListener("click", () => {
+      partners.forEach((item) =>
+        item.classList.remove("selected")
+      );
+
+      selectedName = "";
+      selectedCode = "";
+      command = "";
+      phoneInput.value = "";
+      commandText.textContent =
+        "請先選擇單位並輸入手機號碼";
+      companyText.textContent = "";
+      preview.classList.remove("ready");
+      errorText.style.display = "none";
+      message.style.display = "none";
+      copyButton.textContent = "複製派券指令";
+      copyButton.disabled = true;
+      lineButton.disabled = true;
+    });
+  </script>
+</body>
+</html>
