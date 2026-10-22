@@ -454,7 +454,11 @@
 
     lineButton.addEventListener("click", async () => {
       await copyCommand();
-      window.location.href = "https://line.me/R/";
+
+      const lineShareUrl =
+        `https://line.me/R/share?text=${encodeURIComponent(command)}`;
+
+      window.location.href = lineShareUrl;
     });
 
     resetButton.addEventListener("click", () => {
