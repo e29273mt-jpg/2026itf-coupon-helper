@@ -303,19 +303,19 @@
       </p>
 
       <div class="partners">
-        <button class="partner" data-name="近鐵" data-code="a">
+        <button class="partner" data-name="近鐵" data-code="K1">
           近鐵
         </button>
 
-        <button class="partner" data-name="京成" data-code="b">
+        <button class="partner" data-name="京成" data-code="K2">
           京成
         </button>
 
-        <button class="partner" data-name="京急" data-code="c">
+        <button class="partner" data-name="京急" data-code="K4">
           京急
         </button>
 
-        <button class="partner" data-name="JR 東日本" data-code="d">
+        <button class="partner" data-name="JR 東日本" data-code="K3">
           JR 東日本
         </button>
       </div>
@@ -409,7 +409,7 @@
         phone.length > 0 && !validPhone ? "block" : "none";
 
       if (selectedCode && validPhone) {
-        command = `${phone}_${selectedCode}`;
+        command = `${phone}|${selectedCode}`;
         commandText.textContent = command;
         companyText.textContent = `${selectedName}優惠券`;
         preview.classList.add("ready");
